@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" width="200" height="100">
+  <defs>
+    <style>
+      .input, .kernel, .output {
+        stroke: #9ca3af; /* gray-400 */
+        stroke-width: 0.5;
+        fill-opacity: 0.8;
+      }
+      .input { fill: #3b82f6; } /* blue-500 */
+      .kernel { fill: #f59e0b; } /* amber-500 */
+      .output { fill: #10b981; } /* emerald-500 */
+      .text {
+        font-family: monospace;
+        font-size: 8px;
+        fill: #e5e7eb; /* gray-200 */
+        text-anchor: middle;
+      }
+      .label {
+        font-family: sans-serif;
+        font-size: 10px;
+        fill: #d1d5db; /* gray-300 */
+        text-anchor: middle;
+      }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9ca3af" />
+    </marker>
+  </defs>
+
+  <text x="100" y="12" class="label">1D Convolution</text>
+
+  <!-- Input Signal -->
+  <text x="45" y="30" class="label" text-anchor="end">Input:</text>
+  <g id="input-signal">
+    <rect class="input" x="50" y="35" width="10" height="10" />
+    <rect class="input" x="60" y="35" width="10" height="10" />
+    <rect class="input" x="70" y="35" width="10" height="10" />
+    <rect class="input" x="80" y="35" width="10" height="10" />
+    <rect class="input" x="90" y="35" width="10" height="10" />
+    <rect class="input" x="100" y="35" width="10" height="10" />
+    <rect class="input" x="110" y="35" width="10" height="10" />
+    <rect class="input" x="120" y="35" width="10" height="10" />
+    <rect class="input" x="130" y="35" width="10" height="10" />
+    <rect class="input" x="140" y="35" width="10" height="10" />
+  </g>
+
+  <!-- Kernel -->
+  <text x="45" y="58" class="label" text-anchor="end">Kernel:</text>
+  <g id="kernel">
+    <rect class="kernel" x="70" y="50" width="10" height="10" />
+    <rect class="kernel" x="80" y="50" width="10" height="10" />
+    <rect class="kernel" x="90" y="50" width="10" height="10" />
+  </g>
+  <path d="M 85 46 L 85 50" stroke="#f59e0b" stroke-width="0.5" marker-end="url(#arrow)" />
+  <path d="M 85 35 L 85 41" stroke-dasharray="2 2" stroke="#9ca3af" stroke-width="0.5" />
+
+
+  <!-- Output Signal -->
+  <text x="45" y="80" class="label" text-anchor="end">Output:</text>
+  <g id="output-signal">
+     <rect class="output" x="80" y="70" width="10" height="10" />
+  </g>
+  <path d="M 85 61 L 85 70" stroke="#10b981" stroke-width="0.5" marker-end="url(#arrow)" />
+
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">
+  <defs>
+    <style>
+      .input, .kernel, .output {
+        stroke: #9ca3af; 
+        stroke-width: 0.2;
+        fill-opacity: 0.7;
+      }
+      .input-vol { fill: #3b82f6; }
+      .kernel-vol { fill: #f59e0b; }
+      .output-vol { fill: #10b981; }
+      .label {
+        font-family: sans-serif;
+        font-size: 10px;
+        fill: #d1d5db;
+        text-anchor: middle;
+      }
+      .connector {
+        stroke: #9ca3af;
+        stroke-width: 0.5;
+        stroke-dasharray: 2, 2;
+      }
+    </style>
+  </defs>
+
+  <text x="100" y="12" class="label">3D Convolution</text>
+
+  <!-- Input Volume -->
+  <g id="input-volume" transform="translate(10, 25)">
+    <text x="25" y="-5" class="label">Input Volume</text>
+    <path class="input input-vol" d="M 0 10 L 20 0 L 70 0 L 50 10 L 0 10 M 50 10 L 50 60 L 70 50 L 70 0" />
+    <path class="input input-vol" d="M 0 10 L 0 60 L 50 60 L 50 10" />
+    <path class="input input-vol" d="M 0 60 L 20 50 L 70 50" />
+  </g>
+
+  <!-- Kernel Volume -->
+  <g id="kernel-volume" transform="translate(25, 40)">
+     <path class="kernel kernel-vol" d="M 0 5 L 10 0 L 30 0 L 20 5 L 0 5 M 20 5 L 20 25 L 30 20 L 30 0" opacity="0.6"/>
+    <path class="kernel kernel-vol" d="M 0 5 L 0 25 L 20 25 L 20 5" opacity="0.6"/>
+    <path class="kernel kernel-vol" d="M 0 25 L 10 20 L 30 20" opacity="0.6"/>
+  </g>
+
+  <!-- Output Grid -->
+  <g id="output-volume" transform="translate(120, 35)">
+     <text x="20" y="-5" class="label">Output Volume</text>
+    <path class="output output-vol" d="M 0 10 L 15 0 L 55 0 L 40 10 L 0 10 M 40 10 L 40 50 L 55 40 L 55 0" />
+    <path class="output output-vol" d="M 0 10 L 0 50 L 40 50 L 40 10" />
+    <path class="output output-vol" d="M 0 50 L 15 40 L 55 40" />
+  </g>
+
+  <!-- Connectors -->
+  <path class="connector" d="M 80 50 L 115 50" />
+  <text x="97.5" y="48" class="label">Op</text>
+
+</svg>

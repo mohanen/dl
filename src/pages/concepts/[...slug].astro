@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { type CollectionEntry } from 'astro:content';
+import TableOfContents from '../../components/TableOfContents.svelte';
+
+export async function getStaticPaths() {
+	const concepts = (await getCollection('concepts')).sort((a,b) => a.data.title.localeCompare(b.data.title));
+	return concepts.map((concept, index) => {
+    const prev = concepts[index - 1];
+    const next = concepts[index + 1];
+    return {
+      params: { slug: concept.slug },
+      props: { concept, prev, next },
+    }
+  });
+}
+
+type Props = {
+	concept: CollectionEntry<'concepts'>;
+  prev?: CollectionEntry<'concepts'>;
+  next?: CollectionEntry<'concepts'>;
+};
+
+const { concept, prev, next } = Astro.props;
+const { Content, headings } = await concept.render();
+---
+
+<BaseLayout title={concept.data.title} description={concept.data.description}>
+  <div class="grid lg:grid-cols-[1fr,240px] gap-8">
+    <div class="space-y-4">
+      <a href="/">&larr; Back to Concepts</a>
+      <article class="prose max-w-none">
+        <Content />
+      </article>
+
+      <nav class="mt-16 flex justify-between border-t border-border pt-8">
+        <div>
+          {#if prev}
+            <a href={`/concepts/${prev.slug}/`} class="hover:text-primary">
+              <div class="text-sm text-muted-foreground">Previous</div>
+              <div>&larr; {prev.data.title}</div>
+            </a>
+          {/if}
+        </div>
+        <div>
+          {#if next}
+            <a href={`/concepts/${next.slug}/`} class="text-right hover:text-primary">
+              <div class="text-sm text-muted-foreground">Next</div>
+              <div>{next.data.title} &rarr;</div>
+            </a>
+          {/if}
+        </div>
+      </nav>
+    </div>
+    <div class="hidden lg:block">
+      <TableOfContents client:load headings={headings} />
+    </div>
+  </div>
+</BaseLayout>
+
+

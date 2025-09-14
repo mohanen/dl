@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">
+  <defs>
+    <style>
+      .input-slice, .kernel-slice, .output-slice {
+        stroke: #9ca3af; 
+        stroke-width: 0.3;
+        fill-opacity: 0.8;
+      }
+      .c1 { fill: #ef4444; }
+      .c2 { fill: #3b82f6; }
+      .c3 { fill: #10b981; }
+      .k1 { fill: #fca5a5; }
+      .k2 { fill: #93c5fd; }
+      .k3 { fill: #6ee7b7; }
+      .label {
+        font-family: sans-serif;
+        font-size: 10px;
+        fill: #d1d5db;
+        text-anchor: middle;
+      }
+      .connector {
+        stroke-width: 0.6;
+      }
+      .c1-conn { stroke: #ef4444; marker-end: url(#arrow-c1); }
+      .c2-conn { stroke: #3b82f6; marker-end: url(#arrow-c2); }
+      .c3-conn { stroke: #10b981; marker-end: url(#arrow-c3); }
+    </style>
+     <marker id="arrow-c1" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+    </marker>
+    <marker id="arrow-c2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" />
+    </marker>
+    <marker id="arrow-c3" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+    </marker>
+  </defs>
+
+  <text x="100" y="12" class="label">Depthwise Convolution</text>
+
+  <!-- Input Channels -->
+  <g id="input-channels" transform="translate(20, 20)">
+    <text x="20" y="-5" class="label">Input</text>
+    <rect class="input-slice c1" y="0" width="40" height="40"/>
+    <rect class="input-slice c2" y="10" x="5" width="40" height="40"/>
+    <rect class="input-slice c3" y="20" x="10" width="40" height="40"/>
+  </g>
+
+  <!-- Kernels -->
+   <g id="kernels" transform="translate(85, 27.5)">
+    <text x="12.5" y="-12.5" class="label">Filters</text>
+    <rect class="kernel-slice k1" y="0" width="25" height="25"/>
+    <rect class="kernel-slice k2" y="10" x="5" width="25" height="25"/>
+    <rect class="kernel-slice k3" y="20" x="10" width="25" height="25"/>
+  </g>
+
+  <!-- Output Channels -->
+  <g id="output-channels" transform="translate(140, 20)">
+    <text x="20" y="-5" class="label">Output</text>
+    <rect class="output-slice c1" y="0" width="40" height="40" fill-opacity="0.6"/>
+    <rect class="output-slice c2" y="10" x="5" width="40" height="40" fill-opacity="0.6"/>
+    <rect class="output-slice c3" y="20" x="10" width="40" height="40" fill-opacity="0.6"/>
+  </g>
+
+  <!-- Connectors -->
+  <path class="connector c1-conn" d="M 60 40 L 85 40"/>
+  <path class="connector c1-conn" d="M 110 40 L 140 40"/>
+  <path class="connector c2-conn" d="M 65 50 L 90 50"/>
+  <path class="connector c2-conn" d="M 115 50 L 145 50"/>
+  <path class="connector c3-conn" d="M 70 60 L 95 60"/>
+  <path class="connector c3-conn" d="M 120 60 L 150 60"/>
+
+  <text x="100" y="90" class="label">Each filter applies to a single channel</text>
+
+</svg>

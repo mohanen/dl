@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CollapsibleCategory from '../components/CollapsibleCategory.svelte';
+import SearchFilter from '../components/SearchFilter.svelte';
+import { getCollection } from 'astro:content';
+
+const concepts = await getCollection('concepts');
+const categories = Array.from(new Set(concepts.map((c) => c.data.category))).sort();
+---
+
+<BaseLayout title="DL Cheatsheet" description="Deep Learning concepts, parameters, and examples">
+  <section class="space-y-4">
+    <div class="text-center py-16 relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 via-background to-secondary/20">
+       <div 
+        class="absolute inset-0 z-0 opacity-10"
+        style="background-image: radial-gradient(circle at 40% 60%, hsl(var(--primary)/.1), transparent 40%), radial-gradient(circle at 70% 30%, hsl(var(--accent)/.1), transparent 40%); animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;"
+      ></div>
+      <h1 class="text-4xl font-bold tracking-tight text-primary z-10 relative">Deep Learning Cheatsheet</h1>
+      <p class="text-muted-foreground mt-2 z-10 relative">An illustrated, interactive guide to core concepts.</p>
+    </div>
+
+    <SearchFilter client:load categories={categories} />
+
+    {categories.map((cat) => (
+      <CollapsibleCategory
+        client:load
+        category={cat}
+        concepts={concepts.filter((c) => c.data.category === cat)}
+      />
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.2;
+      transform: scale(1.1);
+    }
+  }
+</style>
+
+

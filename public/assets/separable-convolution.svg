@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">
+  <defs>
+    <style>
+      .input-slice, .kernel-slice, .output-slice, .pointwise-kernel, .final-output {
+        stroke: #9ca3af; 
+        stroke-width: 0.3;
+        fill-opacity: 0.8;
+      }
+      .c1 { fill: #ef4444; }
+      .c2 { fill: #3b82f6; }
+      .c3 { fill: #10b981; }
+      .k1 { fill: #fca5a5; }
+      .k2 { fill: #93c5fd; }
+      .k3 { fill: #6ee7b7; }
+      .pointwise-kernel { fill: #f59e0b; }
+      .final-output { fill: #a855f7; }
+      .label {
+        font-family: sans-serif;
+        font-size: 8px;
+        fill: #d1d5db;
+        text-anchor: middle;
+      }
+      .connector {
+        stroke: #9ca3af;
+        stroke-width: 0.5;
+        marker-end: url(#arrow);
+      }
+    </style>
+     <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9ca3af" />
+    </marker>
+  </defs>
+
+  <text x="100" y="10" class="label" font-size="10">Separable Convolution</text>
+  
+  <text x="45" y="20" class="label">1. Depthwise Conv</text>
+  <path class="connector" d="M 75 50 L 95 50" />
+  <text x="135" y="20" class="label">2. Pointwise (1x1) Conv</text>
+  <path class="connector" d="M 155 50 L 175 50" />
+
+
+  <!-- Input Channels -->
+  <g transform="translate(10, 25)">
+    <rect class="input-slice c1" y="0" width="30" height="30"/>
+    <rect class="input-slice c2" y="10" x="5" width="30" height="30"/>
+    <rect class="input-slice c3" y="20" x="10" width="30" height="30"/>
+  </g>
+
+  <!-- Intermediate (Depthwise Output) -->
+  <g transform="translate(100, 25)">
+    <rect class="output-slice k1" y="0" width="30" height="30"/>
+    <rect class="output-slice k2" y="10" x="5" width="30" height="30"/>
+    <rect class="output-slice k3" y="20" x="10" width="30" height="30"/>
+  </g>
+  
+  <!-- Pointwise Kernel -->
+  <g transform="translate(130, 40)">
+      <rect class="pointwise-kernel" width="15" height="15" />
+  </g>
+
+  <!-- Final Output -->
+  <g transform="translate(180, 40)">
+      <rect class="final-output" width="20" height="20" />
+  </g>
+
+  <text x="100" y="100" class="label" font-size="9">Spatial filtering (depthwise) and channel mixing (pointwise) are done separately</text>
+</svg>

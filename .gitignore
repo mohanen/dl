@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Builds & caches
+.dist/
+dist/
+.astro/
+.pagefind/
+coverage/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Tooling
+.vercel/
+.netlify/
+.pnpm-store/
+.npm/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

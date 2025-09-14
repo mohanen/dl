@@ -1,0 +1,43 @@
+{
+  "name": "dl",
+  "version": "1.0.0",
+  "description": "A comprehensive cheat sheet of deep learning concepts with parameters, usage, and diagrams.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohanen/dl.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohanen/dl/issues"
+  },
+  "homepage": "https://github.com/mohanen/dl#readme",
+  "dependencies": {
+    "@astrojs/db": "^0.17.2",
+    "@tailwindcss/typography": "^0.5.16",
+    "lucide-svelte": "^0.544.0"
+  },
+  "devDependencies": {
+    "@astrojs/svelte": "^7.1.1",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.13.7",
+    "astro-pagefind": "^1.8.5",
+    "autoprefixer": "^10.4.21",
+    "katex": "^0.16.22",
+    "postcss": "^8.5.6",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "svelte": "^5.38.10",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.2"
+  }
+}
