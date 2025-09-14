@@ -16,7 +16,10 @@ const { title, description } = Astro.props;
 		<meta charset="UTF-8" />
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}/favicon.svg`} />
+		<link rel="icon" type="image/svg+xml" sizes="any" href={`${import.meta.env.BASE_URL}favicon.svg?v=2`} />
+		<link rel="shortcut icon" type="image/svg+xml" sizes="any" href={`${import.meta.env.BASE_URL}favicon.svg?v=2`} />
+		<link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}favicon.svg?v=2`} />
+		<link rel="mask-icon" href={`${import.meta.env.BASE_URL}favicon.svg?v=2`} color="#FDE725" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
@@ -42,13 +45,16 @@ const { title, description } = Astro.props;
 	</head>
 	<body class="bg-background text-foreground min-h-screen antialiased">
     <div id="progress" class="progress-bar"></div>
-    <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header class="sticky top-0 z-50 w-full text-lg border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div class="container h-14 flex items-center justify-between">
-        <a href={`${import.meta.env.BASE_URL}/`} class="font-bold">DL Cheatsheet</a>
+        <a href={`${import.meta.env.BASE_URL}/`} class="flex items-center gap-4 font-semibold no-underline text-foreground hover:text-heading">
+          <img src={`${import.meta.env.BASE_URL}/favicon.svg`} alt="DL Cheatsheet" class="h-14 w-14" />
+          <span>The Deep Learning Cheatsheet</span>
+        </a>
         <ThemeToggle client:load />
       </div>
     </header>
-		<main class="container py-8">
+		<main class="container py-6">
 			<slot />
 		</main>
     <footer class="container py-8 text-sm text-muted-foreground text-center">

@@ -39,7 +39,7 @@
         class="w-full text-left flex items-center justify-between mt-8 mb-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md p-1"
         aria-expanded={isOpen}
       >
-        <h2 class="text-xl font-semibold text-primary">{category}</h2>
+        <h2 class="text-xl font-semibold text-heading">{category}</h2>
         <ChevronDown class={`transition-transform duration-200 ${!isOpen ? 'rotate-180' : ''}`} />
       </button>
 
@@ -54,7 +54,6 @@
               {@const parameters = extractSubHeadings(body, 'Key Parameters')}
               {@const types = extractListItems(body, `Types of ${data.title}`) || extractListItems(body, 'Types')}
               {@const images = extractImages(body)}
-              {@const tags = data.keywords}
               <li>
                 <ConceptCard
                   title={data.title}
@@ -66,7 +65,6 @@
                   {parameters}
                   {types}
                   {images}
-                  tags={tags}
                 />
               </li>
             {/each}

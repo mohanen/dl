@@ -20,7 +20,7 @@
   }
 </script>
 
-<div class="mb-8 flex flex-col sm:flex-row gap-4">
+<div class="mb-8 flex flex-col sm:flex-row sm:items-center gap-4">
   <div class="relative w-full sm:max-w-xs">
     <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" aria-hidden="true" />
     <input
@@ -42,27 +42,33 @@
       </button>
     {/if}
   </div>
-  <div class="flex-shrink-0 flex items-center gap-2 overflow-x-auto pb-2 -mb-2">
-     <button
-      on:click={() => setCategory('All')}
-      class="px-3 py-1 rounded-md text-sm transition-colors whitespace-nowrap"
-      class:bg-primary={ $activeCategory === 'All' }
-      class:text-primary-foreground={ $activeCategory === 'All' }
-      class:hover:bg-accent={ $activeCategory !== 'All' }
-    >
-      All
-    </button>
-    {#each categories as category}
-       <button
-        on:click={() => setCategory(category)}
-        class="px-3 py-1 rounded-md text-sm transition-colors whitespace-nowrap"
-        class:bg-primary={ $activeCategory === category }
-        class:text-primary-foreground={ $activeCategory === category }
-        class:hover:bg-accent={ $activeCategory !== category }
-      >
-        {category}
-      </button>
-    {/each}
+  <div class="flex w-full items-center gap-2">
+    <div class="min-w-0 flex-1 overflow-x-auto pb-2 -mb-2">
+      <div class="flex items-center gap-2">
+        <button
+          on:click={() => setCategory('All')}
+          class="px-3 py-1 rounded-md text-sm transition-colors whitespace-nowrap"
+          class:bg-primary={ $activeCategory === 'All' }
+          class:text-primary-foreground={ $activeCategory === 'All' }
+          class:hover:bg-accent={ $activeCategory !== 'All' }
+          class:hover:text-accent-foreground={ $activeCategory !== 'All' }
+        >
+          All
+        </button>
+        {#each categories as category}
+          <button
+            on:click={() => setCategory(category)}
+            class="px-3 py-1 rounded-md text-sm transition-colors whitespace-nowrap"
+            class:bg-primary={ $activeCategory === category }
+            class:text-primary-foreground={ $activeCategory === category }
+            class:hover:bg-accent={ $activeCategory !== category }
+            class:hover:text-accent-foreground={ $activeCategory !== category }
+          >
+            {category}
+          </button>
+        {/each}
+      </div>
+    </div>
+    <div class="flex-shrink-0 text-sm text-muted-foreground ml-2 whitespace-nowrap">{$resultCount} results</div>
   </div>
-  <div class="text-sm text-muted-foreground mt-1">{$resultCount} results</div>
 </div>

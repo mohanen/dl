@@ -14,7 +14,6 @@
   export let parameters: string[] = [];
   export let types: string[] = [];
   export let images: string[] = [];
-  export let tags: string[] = [];
 
   let isHovering = false;
   let isTouchDevice = false;
@@ -22,6 +21,12 @@
 
   onMount(() => {
     isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    // Hide placeholder immediately if the cover image is already cached
+    try {
+      if (cardImgEl && cardImgEl.complete) {
+        cardImgLoaded = true;
+      }
+    } catch {}
     // Prefetch when card enters viewport
     try {
       const observer = new IntersectionObserver((entries) => {
@@ -56,6 +61,8 @@
   let isLoading = false;
   let loadError: string | null = null;
   let htmlContent = '';
+  let cardImgLoaded = false;
+  let cardImgEl: HTMLImageElement | null = null;
 
   let cardEl: HTMLElement;
   let overlayEl: HTMLElement;
@@ -200,6 +207,29 @@
       openModal();
     }
   }
+
+  // Reveal cached or loaded images (used in modal gallery)
+  function revealOnLoad(node: HTMLImageElement) {
+    const reveal = () => {
+      node.classList.remove('animate-pulse', 'bg-muted', 'opacity-0');
+      node.classList.add('opacity-100', 'transition-opacity', 'duration-300');
+    };
+    if (node.complete) {
+      reveal();
+    } else {
+      const onLoad = () => reveal();
+      const onError = () => reveal();
+      node.addEventListener('load', onLoad, { once: true });
+      node.addEventListener('error', onError, { once: true });
+      return {
+        destroy() {
+          node.removeEventListener('load', onLoad);
+          node.removeEventListener('error', onError);
+        }
+      };
+    }
+    return { destroy() {} };
+  }
 </script>
 
 <div
@@ -221,24 +251,24 @@
       <div class="aspect-video w-full rounded-md bg-muted mb-3"></div>
     {/if}
     <div class="font-medium text-card-foreground">{title}</div>
-    <div class="text-sm text-muted-foreground mb-3">{description}</div>
+    <div class="text-sm text-card-foreground mb-3">{description}</div>
     <div class="space-y-2">
       {#if concept}
-        <div class="border border-transparent rounded-md p-2 bg-secondary/30">
-          <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary-foreground/80 mb-1 font-semibold">
+        <div class="border border-border rounded-md p-2 bg-muted">
+          <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-card-foreground mb-1 font-semibold">
             <Brain class="w-3 h-3" />
             <span>Concept</span>
           </h3>
-          <p class="text-sm text-secondary-foreground/90 line-clamp-3">{concept}</p>
+          <p class="text-sm text-card-foreground line-clamp-3">{concept}</p>
         </div>
       {/if}
       {#if how}
-        <div class="border border-transparent rounded-md p-2 bg-muted/40">
-          <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-1 font-semibold">
+        <div class="border border-border rounded-md p-2 bg-muted">
+          <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-card-foreground mb-1 font-semibold">
             <Cog class="w-3 h-3" />
             <span>How it works</span>
           </h3>
-          <p class="text-sm text-muted-foreground/90 line-clamp-3">{how}</p>
+          <p class="text-sm text-card-foreground line-clamp-3">{how}</p>
         </div>
       {/if}
     </div>
@@ -260,41 +290,42 @@
   >
     <div class="relative h-full flex flex-col pb-16">
       {#if images?.length}
-        <img src={images[0]} alt={title} class="aspect-video w-full object-cover rounded-md mb-3"
-          decoding="async" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
+        <div class="mb-3">
+          <div class="relative w-full aspect-video overflow-hidden rounded-md">
+            {#if !cardImgLoaded}
+              <div class="absolute inset-0 bg-muted animate-pulse"></div>
+            {/if}
+            <img bind:this={cardImgEl} src={images[0]} alt={title} class="absolute inset-0 h-full w-full object-cover transition-opacity duration-300" loading="lazy" decoding="async" fetchpriority="low"
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" on:load={() => { cardImgLoaded = true; }} />
+          </div>
+        </div>
       {/if}
       <div class="font-medium text-card-foreground">{title}</div>
-      <div class="text-sm text-muted-foreground mb-3">{description}</div>
+      <div class="text-sm text-card-foreground mb-3">{description}</div>
 
       <div class="space-y-2">
         {#if concept}
-          <div class="border border-transparent rounded-md p-2 bg-secondary/30">
-            <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary-foreground/80 mb-1 font-semibold">
+          <div class="border border-border rounded-md p-2 bg-muted">
+            <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-card-foreground mb-1 font-semibold">
               <Brain class="w-3 h-3" />
               <span>Concept</span>
             </h3>
-            <p class="text-sm text-secondary-foreground/90 line-clamp-3">{concept}</p>
+            <p class="text-sm text-card-foreground line-clamp-3">{concept}</p>
           </div>
         {/if}
         {#if how}
-          <div class="border border-transparent rounded-md p-2 bg-muted/40">
-            <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-1 font-semibold">
+          <div class="border border-border rounded-md p-2 bg-muted">
+            <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-card-foreground mb-1 font-semibold">
               <Cog class="w-3 h-3" />
               <span>How it works</span>
             </h3>
-            <p class="text-sm text-muted-foreground/90 line-clamp-3">{how}</p>
+            <p class="text-sm text-card-foreground line-clamp-3">{how}</p>
           </div>
         {/if}
       </div>
 
-
-      {#if tags?.length}
-        <div class="mt-auto pt-2 pb-1 border-t border-border flex flex-nowrap items-center gap-1 whitespace-nowrap overflow-hidden">
-          {#each tags as t}
-            <span class="shrink-0 inline-flex items-center rounded-full border border-border/60 bg-surface hover:bg-surface-hover text-text-muted text-xs px-2 py-0.5 leading-5 transition-colors">{t}</span>
-          {/each}
-        </div>
-      {/if}
+      
+      
     </div>
   </a>
 
@@ -317,12 +348,12 @@
           {:else}
             <div class="grid gap-3 md:grid-cols-2">
               {#if concept}
-                <section class="rounded-md border border-border bg-secondary/30 p-3">
-                  <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary-foreground/80 mb-1 font-semibold">
+                <section class="rounded-md border border-border bg-muted/40 p-3">
+                  <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-popover-foreground mb-1 font-semibold">
                     <Brain class="w-4 h-4" />
                     <span>Concept</span>
                   </h3>
-                  <div class="text-sm text-secondary-foreground/90">{concept}</div>
+                  <div class="text-sm text-popover-foreground">{concept}</div>
                 </section>
               {/if}
 
@@ -366,11 +397,11 @@
 
               {#if formula}
                 <section class="rounded-md border border-border bg-accent/20 p-3 md:col-span-2">
-                  <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-accent-foreground/80 mb-1 font-semibold">
+                  <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-popover-foreground mb-1 font-semibold">
                     <Calculator class="w-4 h-4" />
                     <span>Formula</span>
                   </h3>
-                  <div class="text-accent-foreground/90 font-mono text-sm" bind:this={modalFormulaEl}></div>
+                  <div class="text-popover-foreground font-mono text-sm" bind:this={modalFormulaEl}></div>
                 </section>
               {/if}
 
@@ -382,7 +413,7 @@
                   </h3>
                   <div class="flex gap-2 overflow-x-auto rounded-md">
                     {#each images as img}
-                      <img src={img} alt={title} class="h-24 w-auto rounded-sm border border-border" loading="lazy" />
+                      <img use:revealOnLoad src={img} alt={title} class="h-64 w-auto rounded-sm border border-border bg-muted opacity-0 animate-pulse" loading="lazy" decoding="async" fetchpriority="low" />
                     {/each}
                   </div>
                 </section>
