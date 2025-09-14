@@ -36,20 +36,20 @@ const { Content, headings } = await concept.render();
 
       <nav class="mt-16 flex justify-between border-t border-border pt-8">
         <div>
-          {#if prev}
+          {prev ? (
             <a href={`/concepts/${prev.slug}/`} class="hover:text-primary">
               <div class="text-sm text-muted-foreground">Previous</div>
               <div>&larr; {prev.data.title}</div>
             </a>
-          {/if}
+          ) : null}
         </div>
         <div>
-          {#if next}
+          {next ? (
             <a href={`/concepts/${next.slug}/`} class="text-right hover:text-primary">
               <div class="text-sm text-muted-foreground">Next</div>
               <div>{next.data.title} &rarr;</div>
             </a>
-          {/if}
+          ) : null}
         </div>
       </nav>
     </div>
