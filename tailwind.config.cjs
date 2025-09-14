@@ -6,6 +6,12 @@ module.exports = {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
+      boxShadow: {
+        's-0': 'none',
+        's-1': '0 1px 2px rgba(0,0,0,.14), 0 1px 1px rgba(0,0,0,.08)',
+        's-2': '0 6px 12px rgba(0,0,0,.18)',
+        's-3': '0 18px 42px rgba(0,0,0,.28)'
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

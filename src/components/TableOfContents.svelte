@@ -26,6 +26,13 @@
 
     return () => observer.disconnect();
   });
+
+  function scrollToHeading(slug: string) {
+    const el = document.getElementById(slug);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 </script>
 
 <nav class="sticky top-24">
@@ -39,6 +46,8 @@
           class:text-primary={activeHeading === heading.slug}
           class:text-muted-foreground={activeHeading !== heading.slug}
           class:hover:text-foreground={activeHeading !== heading.slug}
+          aria-current={activeHeading === heading.slug ? 'true' : undefined}
+          on:click|preventDefault={() => scrollToHeading(heading.slug)}
         >
           {heading.text}
         </a>

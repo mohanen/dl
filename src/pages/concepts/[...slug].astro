@@ -29,7 +29,14 @@ const { Content, headings } = await concept.render();
 <BaseLayout title={concept.data.title} description={concept.data.description}>
   <div class="grid lg:grid-cols-[1fr,240px] gap-8">
     <div class="space-y-4">
-      <a href="/">&larr; Back to Concepts</a>
+      <nav class="text-sm text-muted-foreground" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2">
+          <li><a href="/" class="hover:text-primary">Concepts</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="text-foreground">{concept.data.title}</li>
+        </ol>
+      </nav>
+      <div class="text-xs text-muted-foreground">{Math.max(1, Math.round((concept.body?.split(/\s+/).length || 200) / 220))} min read</div>
       <article class="prose max-w-none">
         <Content />
       </article>

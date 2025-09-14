@@ -1,12 +1,12 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import ConceptCard from './ConceptCard.svelte';
-  import type { CollectionEntry } from 'astro:content';
   import { searchTerm, activeCategory } from '../stores/searchStore';
   import { derived } from 'svelte/store';
+  import { ChevronDown } from 'lucide-svelte';
 
   export let category: string;
-  export let concepts: CollectionEntry<'concepts'>[];
+  export let concepts: any[];
 
   let isOpen = true;
 
@@ -22,6 +22,12 @@
     }
   );
 
+  // Update result count for active category only
+  import { resultCount } from '../stores/searchStore';
+  $: if ($activeCategory === category) {
+    resultCount.set($filteredConcepts.length);
+  }
+
   function toggle() {
     isOpen = !isOpen;
   }
@@ -36,7 +42,7 @@
         aria-expanded={isOpen}
       >
         <h2 class="text-xl font-semibold text-primary">{category}</h2>
-        <i class="fa-solid fa-chevron-down transition-transform duration-200" class:rotate-180={!isOpen}></i>
+        <ChevronDown class={`transition-transform duration-200 ${!isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {#if isOpen}
@@ -52,7 +58,6 @@
               {@const images = extractImages(body)}
               <li>
                 <ConceptCard
-                  client:idle
                   title={data.title}
                   description={data.description}
                   href={`/concepts/${slug}/`}

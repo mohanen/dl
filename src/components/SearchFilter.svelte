@@ -1,5 +1,13 @@
 <script lang="ts">
-  import { searchTerm, activeCategory } from '../stores/searchStore';
+  import { searchTerm, activeCategory, resultCount } from '../stores/searchStore';
+  import { Search as SearchIcon } from 'lucide-svelte';
+  import { onMount } from 'svelte';
+  let localTerm = '';
+  let debTimer: number | undefined;
+  function handleDebouncedInput(value: string) {
+    if (debTimer) window.clearTimeout(debTimer);
+    debTimer = window.setTimeout(() => searchTerm.set(value), 200);
+  }
 
   export let categories: string[];
 
@@ -15,13 +23,25 @@
 
 <div class="mb-8 flex flex-col sm:flex-row gap-4">
   <div class="relative w-full sm:max-w-xs">
-    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"></i>
+    <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" aria-hidden="true" />
     <input
       type="text"
       placeholder="Search concepts..."
       class="pl-10 pr-4 py-2 w-full bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-      on:input={handleSearch}
+      bind:value={localTerm}
+      on:input={(e) => handleDebouncedInput((e.target as HTMLInputElement).value)}
+      aria-label="Search concepts"
     />
+    {#if localTerm}
+      <button
+        type="button"
+        class="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs"
+        on:click={() => { localTerm=''; searchTerm.set(''); }}
+        aria-label="Clear search"
+      >
+        ✕
+      </button>
+    {/if}
   </div>
   <div class="flex-shrink-0 flex items-center gap-2 overflow-x-auto pb-2 -mb-2">
      <button
@@ -45,4 +65,5 @@
       </button>
     {/each}
   </div>
+  <div class="text-sm text-muted-foreground mt-1">{$resultCount} results</div>
 </div>

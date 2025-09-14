@@ -13,14 +13,12 @@ const { title, description } = Astro.props;
 <html lang="en">
 	<head>
 		<ViewTransitions />
-		<meta charset="UTF--8" />
+		<meta charset="UTF-8" />
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 		<script is:inline>
 			const theme = (() => {
 				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
@@ -42,6 +40,7 @@ const { title, description } = Astro.props;
 		</script>
 	</head>
 	<body class="bg-background text-foreground min-h-screen antialiased">
+    <div id="progress" class="progress-bar"></div>
     <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div class="container h-14 flex items-center justify-between">
         <a href="/" class="font-bold">DL Cheatsheet</a>
@@ -63,16 +62,16 @@ const { title, description } = Astro.props;
 
           const button = document.createElement('button');
           button.className = 'copy-button';
-          button.innerHTML = '<i class="fa-solid fa-copy"></i><span>Copy</span>';
+          button.textContent = 'Copy';
           
           let timeout;
           button.addEventListener('click', () => {
             navigator.clipboard.writeText(code.innerText);
-            button.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+            button.textContent = 'Copied!';
             
             clearTimeout(timeout);
             timeout = setTimeout(() => {
-              button.innerHTML = '<i class="fa-solid fa-copy"></i><span>Copy</span>';
+              button.textContent = 'Copy';
             }, 2000);
           });
           
@@ -82,6 +81,20 @@ const { title, description } = Astro.props;
       }
       addCopyButtons();
       document.addEventListener('astro:after-swap', addCopyButtons);
+
+      // Reading progress
+      const progress = document.getElementById('progress');
+      function updateProgress() {
+        const scrollTop = window.scrollY;
+        const height = document.body.scrollHeight - window.innerHeight;
+        const pct = Math.max(0, Math.min(1, height ? scrollTop / height : 0));
+        if (progress) progress.style.width = `${pct * 100}%`;
+      }
+      updateProgress();
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      document.addEventListener('astro:after-swap', () => {
+        updateProgress();
+      });
     </script>
 	</body>
 </html>
@@ -110,14 +123,7 @@ const { title, description } = Astro.props;
     opacity: 1;
   }
 
-	.container {
-		width: 100%;
-		max-width: 1200px;
-		margin-left: auto;
-		margin-right: auto;
-		padding-left: 1rem;
-		padding-right: 1rem;
-	}
+ 
 </style>
 
 
