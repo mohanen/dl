@@ -60,7 +60,7 @@
                 <ConceptCard
                   title={data.title}
                   description={data.description}
-                  href={`/concepts/${slug}/`}
+                  href={`${import.meta.env.BASE_URL}/concepts/${slug}/`}
                   concept={conceptText}
                   how={howText}
                   {formula}

@@ -1,6 +1,3 @@
-/* KaTeX CSS must be imported before Tailwind layers */
-@import 'katex/dist/katex.min.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
