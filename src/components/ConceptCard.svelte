@@ -3,8 +3,12 @@
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import katex from 'katex';
-  import { Brain, Cog, Calculator, SlidersHorizontal, Tags, Images } from 'lucide-svelte';
+  import { Brain, Cog, Calculator, SlidersHorizontal, Tags, Images, CheckCircle } from 'lucide-svelte';
   const contentCache: Map<string, string> = new Map();
+  // Base URL for assets (matches BaseLayout logic)
+  const BASE = (import.meta.env.BASE_URL && import.meta.env.BASE_URL.endsWith('/'))
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL || ''}/`;
   export let title: string;
   export let description: string;
   export let href: string;
@@ -61,6 +65,7 @@
   let isLoading = false;
   let loadError: string | null = null;
   let htmlContent = '';
+  let isReady = false;
   let cardImgLoaded = false;
   let cardImgEl: HTMLImageElement | null = null;
 
@@ -137,6 +142,7 @@
       loadError = null;
       if (contentCache.has(href)) {
         htmlContent = contentCache.get(href) as string;
+        isReady = !!htmlContent;
       } else {
         const res = await fetch(href);
         const text = await res.text();
@@ -145,6 +151,7 @@
         const article = doc.querySelector('article');
         htmlContent = article ? article.innerHTML : text;
         contentCache.set(href, htmlContent);
+        isReady = true;
       }
     } catch (err: any) {
       loadError = err?.message ?? 'Failed to load content';
@@ -159,6 +166,7 @@
       isLoading = true;
       if (contentCache.has(href)) {
         htmlContent = contentCache.get(href) as string;
+        isReady = !!htmlContent;
       } else {
         const res = await fetch(href, { method: 'GET' });
         const text = await res.text();
@@ -167,6 +175,7 @@
         const article = doc.querySelector('article');
         htmlContent = article ? article.innerHTML : text;
         contentCache.set(href, htmlContent);
+        isReady = true;
       }
     } catch {
       // ignore prefetch errors
@@ -300,7 +309,15 @@
           </div>
         </div>
       {/if}
-      <div class="font-medium text-card-foreground">{title}</div>
+      <div class="flex items-center justify-between gap-2">
+        <div class="font-medium text-card-foreground">{title}</div>
+        {#if isReady}
+          <div class="flex items-center gap-1 rounded-full bg-secondary text-secondary-foreground px-2 py-0.5 text-[10px] shadow" aria-label="Ready to view" title="Ready to view">
+            <CheckCircle class="w-3 h-3" />
+            <span>Ready</span>
+          </div>
+        {/if}
+      </div>
       <div class="text-sm text-card-foreground mb-3">{description}</div>
 
       <div class="space-y-2">
@@ -342,7 +359,12 @@
         </div>
         <div class="p-4 overflow-auto">
           {#if isLoading}
-            <p class="text-muted-foreground">Loading…</p>
+            <div class="min-h-40 flex items-center justify-center">
+              <div class="preloader-content" aria-label="Loading" role="status">
+                <img src={`${BASE}favicon.svg`} alt="" aria-hidden="true" class="preloader-icon" />
+                <div class="preloader-spinner" aria-hidden="true"></div>
+              </div>
+            </div>
           {:else if loadError}
             <p class="text-red-400">{loadError}</p>
           {:else}
