@@ -1,7 +1,7 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import ConceptCard from './ConceptCard.svelte';
-  import { searchTerm, activeCategory } from '../stores/searchStore';
+  import { searchTerm, activeCategory, categoryCounts } from '../stores/searchStore';
   import { derived } from 'svelte/store';
   import { ChevronDown } from 'lucide-svelte';
 
@@ -14,19 +14,17 @@
     [searchTerm],
     ([$searchTerm]) => {
       if (!$searchTerm) return concepts;
-      return concepts.filter(concept => 
-        concept.data.title.toLowerCase().includes($searchTerm.toLowerCase()) ||
-        concept.data.description.toLowerCase().includes($searchTerm.toLowerCase()) ||
-        concept.keywords?.join(' ').toLowerCase().includes($searchTerm.toLowerCase())
+      const q = $searchTerm.toLowerCase();
+      return concepts.filter((concept) => 
+        concept.data.title.toLowerCase().includes(q) ||
+        concept.data.description.toLowerCase().includes(q) ||
+        (concept.data.keywords?.join(' ').toLowerCase().includes(q))
       );
     }
   );
 
-  // Update result count for active category only
-  import { resultCount } from '../stores/searchStore';
-  $: if ($activeCategory === category) {
-    resultCount.set($filteredConcepts.length);
-  }
+  // Publish this category's filtered count into the shared store for total result counting
+  $: categoryCounts.update((m) => ({ ...m, [category]: $filteredConcepts.length }));
 
   function toggle() {
     isOpen = !isOpen;
@@ -56,6 +54,7 @@
               {@const parameters = extractSubHeadings(body, 'Key Parameters')}
               {@const types = extractListItems(body, `Types of ${data.title}`) || extractListItems(body, 'Types')}
               {@const images = extractImages(body)}
+              {@const tags = data.keywords}
               <li>
                 <ConceptCard
                   title={data.title}
@@ -67,6 +66,7 @@
                   {parameters}
                   {types}
                   {images}
+                  tags={tags}
                 />
               </li>
             {/each}
@@ -82,7 +82,7 @@
   // This is a bit of a workaround for sharing server-side logic from Astro with a Svelte component.
   export function extractSection(content: string | undefined, heading: string): string {
     if (!content) return '';
-    const headingRegex = new RegExp(`^###\\s+${heading}\\s*([\\s\\S]*?)(?=\\n###|$)`, 'im');
+    const headingRegex = new RegExp(`^###\\s+${heading}\\s*([\\s\\S]*?)(?=\\r?\\n###|$)`, 'im');
     const match = content.match(headingRegex);
     return match ? match[1].trim() : '';
   }
@@ -98,12 +98,55 @@
     if (!content) return [];
     const section = extractSection(content, heading);
     if (!section) return [];
-    const subHeadingRegex = /####\s*(.*?)\\s*\\n([\\s\\S]*?)(?=\\n####|\\n###|$)/g;
-    let matches;
-    const results = [];
-    while ((matches = subHeadingRegex.exec(section)) !== null) {
-      results.push(`<strong>${matches[1].trim()}:</strong> ${matches[2].trim()}`);
+    const lines = section.split(/\r?\n/);
+    const results: string[] = [];
+    let currentTitle: string | null = null;
+    let currentBuffer: string[] = [];
+    const flush = () => {
+      if (currentTitle) {
+        // Split combined titles like "kernel_size / stride / padding"
+        const parts = currentTitle.split('/').map((p) => p.trim()).filter(Boolean);
+        if (parts.length > 1) {
+          for (const part of parts) {
+            results.push(`<strong>${part}</strong>`);
+          }
+        } else {
+          results.push(`<strong>${currentTitle}</strong>`);
+        }
+      }
+      currentTitle = null;
+      currentBuffer = [];
+    };
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (/^\s*###\s+/.test(line)) {
+        // Next major section starts; stop parsing
+        break;
+      }
+      const h4Match = line.match(/^\s*####\s*(.*)$/);
+      if (h4Match) {
+        flush();
+        currentTitle = h4Match[1].trim();
+        continue;
+      }
+      if (currentTitle) {
+        currentBuffer.push(line);
+      }
     }
+    flush();
+    if (results.length > 0) return results;
+
+    // Fallback: collect inline code tokens (e.g., `kernel_size`) as parameter names
+    const codeTokenRegex = /`([\w_]+)`/g;
+    const unique = new Set<string>();
+    let m: RegExpExecArray | null;
+    while ((m = codeTokenRegex.exec(section)) !== null) {
+      unique.add(m[1]);
+    }
+    if (unique.size > 0) {
+      return Array.from(unique).map((t) => `<strong>${t}</strong>`);
+    }
+
     return results;
   }
 
@@ -111,9 +154,9 @@
     if (!content) return [];
     const section = extractSection(content, heading);
     if (!section) return [];
-    const listItemRegex = /-\\s*(.*)/g;
+    const listItemRegex = /^\s*[-*]\s+(.*)/gm;
     let matches;
-    const results = [];
+    const results: string[] = [];
     while ((matches = listItemRegex.exec(section)) !== null) {
       results.push(matches[1].trim());
     }

@@ -11,10 +11,9 @@
 
   export let categories: string[];
 
-  function handleSearch(event: Event) {
-    const target = event.target as HTMLInputElement;
-    searchTerm.set(target.value);
-  }
+  // Initialize local input from store so URL-initialized query reflects in UI
+  const unsubscribe = searchTerm.subscribe((v) => { localTerm = v; });
+  onMount(() => () => unsubscribe());
 
   function setCategory(category: string) {
     activeCategory.set(category);

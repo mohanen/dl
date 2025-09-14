@@ -2,7 +2,20 @@ import { writable, derived } from 'svelte/store';
 
 export const searchTerm = writable('');
 export const activeCategory = writable('All');
-export const resultCount = writable(0);
+// Per-category filtered counts published by each category component
+export const categoryCounts = writable<Record<string, number>>({});
+
+// Derived total result count for current selection
+export const resultCount = derived(
+  [activeCategory, categoryCounts],
+  ([$activeCategory, $categoryCounts]) => {
+    if ($activeCategory === 'All') {
+      return Object.values($categoryCounts).reduce((sum, n) => sum + (n || 0), 0);
+    }
+    return $categoryCounts[$activeCategory] || 0;
+  },
+  0
+);
 
 // URL sync helpers
 function getQueryParam(name: string): string | null {

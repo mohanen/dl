@@ -14,10 +14,11 @@
   export let parameters: string[] = [];
   export let types: string[] = [];
   export let images: string[] = [];
+  export let tags: string[] = [];
 
   let isHovering = false;
   let isTouchDevice = false;
-  let formulaEl: HTMLElement;
+  let modalFormulaEl: HTMLElement;
 
   onMount(() => {
     isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -36,15 +37,17 @@
   });
   
   afterUpdate(() => {
-    if (formula && formulaEl) {
-      try {
-        katex.render(formula, formulaEl, {
-          throwOnError: false,
-          displayMode: true
-        });
-      } catch (e) {
-        console.error(e);
-        formulaEl.textContent = `$$${formula}$$`; // Fallback
+    if (formula) {
+      if (modalFormulaEl) {
+        try {
+          katex.render(formula, modalFormulaEl, {
+            throwOnError: false,
+            displayMode: true
+          });
+        } catch (e) {
+          console.error(e);
+          modalFormulaEl.textContent = `$$${formula}$$`; // Fallback
+        }
       }
     }
   });
@@ -64,6 +67,8 @@
   let viewportHeight = 0;
   let previouslyFocusedEl: HTMLElement | null = null;
   let inertedEls: Element[] = [];
+  let previousBodyOverflow = '';
+  let previousBodyPaddingRight = '';
 
   async function openModal(event?: MouseEvent) {
     if (event) event.preventDefault();
@@ -98,6 +103,12 @@
     showModal = true;
     // Scroll lock and inert background
     try {
+      previousBodyOverflow = document.body.style.overflow;
+      previousBodyPaddingRight = document.body.style.paddingRight;
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
       document.body.style.overflow = 'hidden';
       inertedEls = Array.from(document.body.children).filter((el) => !el.contains(overlayEl));
       inertedEls.forEach((el) => {
@@ -170,7 +181,8 @@
       backdropVisible = false;
       // Restore scroll and background
       try {
-        document.body.style.overflow = '';
+        document.body.style.overflow = previousBodyOverflow;
+        document.body.style.paddingRight = previousBodyPaddingRight;
         inertedEls.forEach((el) => {
           (el as any).inert = false;
           el.removeAttribute('aria-hidden');
@@ -204,7 +216,7 @@
   bind:this={cardEl}
 >
   <!-- Ghost element to preserve space in the grid -->
-  <div class="block p-4 rounded-lg bg-card border border-border select-none invisible">
+  <div class="block p-5 rounded-lg bg-card border border-border select-none invisible min-h-64 md:min-h-72">
     {#if images?.length}
       <div class="aspect-video w-full rounded-md bg-muted mb-3"></div>
     {/if}
@@ -220,12 +232,21 @@
           <p class="text-sm text-secondary-foreground/90 line-clamp-3">{concept}</p>
         </div>
       {/if}
+      {#if how}
+        <div class="border border-transparent rounded-md p-2 bg-muted/40">
+          <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-1 font-semibold">
+            <Cog class="w-3 h-3" />
+            <span>How it works</span>
+          </h3>
+          <p class="text-sm text-muted-foreground/90 line-clamp-3">{how}</p>
+        </div>
+      {/if}
     </div>
   </div>
 
   <a
     href={href}
-    class="block p-4 rounded-lg bg-card border focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 will-change-transform overflow-hidden absolute top-0 left-0 w-full h-full"
+    class="block p-5 rounded-lg bg-card border no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors duration-200 will-change-transform overflow-hidden absolute top-0 left-0 w-full h-full"
     class:border-border={!isHovering}
     class:ring-2={isHovering}
     class:ring-accent={isHovering}
@@ -237,109 +258,43 @@
     tabindex="0"
     aria-label={`Open ${title}`}
   >
-    {#if images?.length}
-      <img src={images[0]} alt={title} class="aspect-video w-full object-cover rounded-md mb-3"
-        decoding="async" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
-    {/if}
-    <div class="font-medium text-card-foreground">{title}</div>
-    <div class="text-sm text-muted-foreground mb-3">{description}</div>
-
-    <div class="space-y-2">
-      {#if concept}
-        <div class="border border-transparent rounded-md p-2 bg-secondary/30">
-          <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary-foreground/80 mb-1 font-semibold">
-            <Brain class="w-3 h-3" />
-            <span>Concept</span>
-          </h3>
-          <p class="text-sm text-secondary-foreground/90 line-clamp-3">{concept}</p>
-        </div>
+    <div class="relative h-full flex flex-col pb-16">
+      {#if images?.length}
+        <img src={images[0]} alt={title} class="aspect-video w-full object-cover rounded-md mb-3"
+          decoding="async" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
       {/if}
-    </div>
+      <div class="font-medium text-card-foreground">{title}</div>
+      <div class="text-sm text-muted-foreground mb-3">{description}</div>
 
-    <div class="mt-3 flex items-center gap-2 text-sm text-primary">
-      <span class="underline">Open detail</span>
-    </div>
-
-    <div
-      class="text-xs text-muted-foreground transition-all duration-200 ease-out overflow-hidden"
-      class:max-h-96={isHovering}
-      class:opacity-100={isHovering}
-      class:mt-3={isHovering}
-      class:max-h-0={!isHovering}
-      class:opacity-0={!isHovering}
-      class:mt-0={!isHovering}
-    >
-      <div class="space-y-2 mt-2 pt-2 border-t border-border">
-        {#if isHovering}
-          {#if how}
-            <div in:fade={{ delay: 100, duration: 200 }} out:fade={{ duration: 100 }}>
-              <div class="border border-transparent rounded-md p-2 bg-muted/40">
-                <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-1 font-semibold">
-                  <Cog class="w-3 h-3" />
-                  <span>How it works</span>
-                </h3>
-                <p class="text-sm text-muted-foreground/90 line-clamp-3">{how}</p>
-              </div>
-            </div>
-          {/if}
-          {#if formula}
-            <div in:fade={{ delay: 150, duration: 200 }} out:fade={{ duration: 100 }}>
-              <div class="border border-transparent rounded-md p-2 bg-accent/20">
-                <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-accent-foreground/80 mb-1 font-semibold">
-                  <Calculator class="w-3 h-3" />
-                  <span>Formula</span>
-                </h3>
-                <div class="text-accent-foreground/90 font-mono text-sm" bind:this={formulaEl}></div>
-              </div>
-            </div>
-          {/if}
-          {#if parameters?.length}
-            <div in:fade={{ delay: 200, duration: 200 }} out:fade={{ duration: 100 }}>
-              <div>
-                <h3 class="flex items-center gap-2 text-muted-foreground uppercase tracking-wide text-[10px] mb-1 font-semibold">
-                  <SlidersHorizontal class="w-3 h-3" />
-                  <span>Key Parameters</span>
-                </h3>
-                <div class="flex flex-wrap gap-1">
-                  {#each parameters.slice(0, 6) as p}
-                    <span class="rounded border border-border bg-secondary px-2 py-0.5 text-secondary-foreground text-xs">{@html p}</span>
-                  {/each}
-                </div>
-              </div>
-            </div>
-          {/if}
-          {#if types?.length}
-            <div in:fade={{ delay: 250, duration: 200 }} out:fade={{ duration: 100 }}>
-              <div>
-                <h3 class="flex items-center gap-2 text-muted-foreground uppercase tracking-wide text-[10px] mb-1 font-semibold">
-                  <Tags class="w-3 h-3" />
-                  <span>Types</span>
-                </h3>
-                <div class="flex flex-wrap gap-1">
-                  {#each types.slice(0, 6) as t}
-                    <span class="rounded border border-border bg-secondary px-2 py-0.5 text-secondary-foreground text-xs">{t}</span>
-                  {/each}
-                </div>
-              </div>
-            </div>
-          {/if}
-          {#if images?.length > 1}
-            <div in:fade={{ delay: 300, duration: 200 }} out:fade={{ duration: 100 }}>
-              <div>
-                <h3 class="flex items-center gap-2 text-muted-foreground uppercase tracking-wide text-[10px] mb-1 font-semibold">
-                  <Images class="w-3 h-3" />
-                  <span>Images</span>
-                </h3>
-                <div class="flex gap-2 overflow-hidden rounded-md">
-                  {#each images.slice(1, 3) as img}
-                    <img src={img} alt={title} class="h-16 w-auto rounded-sm border border-border" loading="lazy" />
-                  {/each}
-                </div>
-              </div>
-            </div>
-          {/if}
+      <div class="space-y-2">
+        {#if concept}
+          <div class="border border-transparent rounded-md p-2 bg-secondary/30">
+            <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary-foreground/80 mb-1 font-semibold">
+              <Brain class="w-3 h-3" />
+              <span>Concept</span>
+            </h3>
+            <p class="text-sm text-secondary-foreground/90 line-clamp-3">{concept}</p>
+          </div>
+        {/if}
+        {#if how}
+          <div class="border border-transparent rounded-md p-2 bg-muted/40">
+            <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-1 font-semibold">
+              <Cog class="w-3 h-3" />
+              <span>How it works</span>
+            </h3>
+            <p class="text-sm text-muted-foreground/90 line-clamp-3">{how}</p>
+          </div>
         {/if}
       </div>
+
+
+      {#if tags?.length}
+        <div class="mt-auto pt-2 pb-1 border-t border-border flex flex-nowrap items-center gap-1 whitespace-nowrap overflow-hidden">
+          {#each tags as t}
+            <span class="shrink-0 inline-flex items-center rounded-full border border-border/60 bg-surface hover:bg-surface-hover text-text-muted text-xs px-2 py-0.5 leading-5 transition-colors">{t}</span>
+          {/each}
+        </div>
+      {/if}
     </div>
   </a>
 
@@ -354,14 +309,84 @@
           <h2 class="text-lg font-semibold text-popover-foreground">{title}</h2>
           <button class="rounded px-2 py-1 text-muted-foreground hover:bg-accent" on:click={closeModal} aria-label="Close" bind:this={closeBtnEl}>✕</button>
         </div>
-        <div class="prose max-w-none p-4 overflow-auto">
+        <div class="p-4 overflow-auto">
           {#if isLoading}
             <p class="text-muted-foreground">Loading…</p>
           {:else if loadError}
             <p class="text-red-400">{loadError}</p>
           {:else}
-            <div class="article">
-              {@html htmlContent}
+            <div class="grid gap-3 md:grid-cols-2">
+              {#if concept}
+                <section class="rounded-md border border-border bg-secondary/30 p-3">
+                  <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary-foreground/80 mb-1 font-semibold">
+                    <Brain class="w-4 h-4" />
+                    <span>Concept</span>
+                  </h3>
+                  <div class="text-sm text-secondary-foreground/90">{concept}</div>
+                </section>
+              {/if}
+
+              {#if how}
+                <section class="rounded-md border border-border bg-muted/40 p-3">
+                  <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-1 font-semibold">
+                    <Cog class="w-4 h-4" />
+                    <span>How it works</span>
+                  </h3>
+                  <div class="text-sm text-muted-foreground/90">{how}</div>
+                </section>
+              {/if}
+
+              {#if parameters?.length}
+                <section class="rounded-md border border-border bg-background p-3">
+                  <h3 class="flex items-center gap-2 text-[10px] uppercase tracking-wide text-muted-foreground mb-1 font-semibold">
+                    <SlidersHorizontal class="w-4 h-4" />
+                    <span>Key Parameters</span>
+                  </h3>
+                  <div class="flex flex-wrap gap-1">
+                    {#each parameters as p}
+                      <span class="rounded border border-border bg-secondary px-2 py-0.5 text-secondary-foreground text-xs">{@html p}</span>
+                    {/each}
+                  </div>
+                </section>
+              {/if}
+
+              {#if types?.length}
+                <section class="rounded-md border border-border bg-background p-3">
+                  <h3 class="flex items-center gap-2 text-[10px] uppercase tracking-wide text-muted-foreground mb-1 font-semibold">
+                    <Tags class="w-4 h-4" />
+                    <span>Types</span>
+                  </h3>
+                  <div class="flex flex-wrap gap-1">
+                    {#each types as t}
+                      <span class="rounded border border-border bg-secondary px-2 py-0.5 text-secondary-foreground text-xs">{t}</span>
+                    {/each}
+                  </div>
+                </section>
+              {/if}
+
+              {#if formula}
+                <section class="rounded-md border border-border bg-accent/20 p-3 md:col-span-2">
+                  <h3 class="flex items-center gap-2 text-xs uppercase tracking-wider text-accent-foreground/80 mb-1 font-semibold">
+                    <Calculator class="w-4 h-4" />
+                    <span>Formula</span>
+                  </h3>
+                  <div class="text-accent-foreground/90 font-mono text-sm" bind:this={modalFormulaEl}></div>
+                </section>
+              {/if}
+
+              {#if images?.length}
+                <section class="rounded-md border border-border bg-background p-3 md:col-span-2">
+                  <h3 class="flex items-center gap-2 text-[10px] uppercase tracking-wide text-muted-foreground mb-1 font-semibold">
+                    <Images class="w-4 h-4" />
+                    <span>Images</span>
+                  </h3>
+                  <div class="flex gap-2 overflow-x-auto rounded-md">
+                    {#each images as img}
+                      <img src={img} alt={title} class="h-24 w-auto rounded-sm border border-border" loading="lazy" />
+                    {/each}
+                  </div>
+                </section>
+              {/if}
             </div>
           {/if}
         </div>
