@@ -103,9 +103,16 @@ const BASE = import.meta.env.BASE_URL && import.meta.env.BASE_URL.endsWith('/')
         el.addEventListener('transitionend', done, { once: true });
         window.setTimeout(done, 600);
       }
-      // Hide once the page is fully hydrated
-      window.addEventListener('load', () => { hidePreloader(); });
-      document.addEventListener('astro:page-load', () => { hidePreloader(); });
+      // Hide early on DOM ready or Astro ready; don't wait for all lazy images
+      const hideSoon = () => { setTimeout(hidePreloader, 50); };
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        hideSoon();
+      } else {
+        document.addEventListener('DOMContentLoaded', hideSoon, { once: true });
+      }
+      document.addEventListener('astro:page-load', hideSoon, { once: true });
+      // Fallback safety timeout in case events don't fire
+      setTimeout(() => { try { hidePreloader(); } catch(_){} }, 2500);
       // Optional: show during SPA navigations for consistency
       document.addEventListener('astro:before-preparation', () => { showPreloader(); });
       function addCopyButtons() {
