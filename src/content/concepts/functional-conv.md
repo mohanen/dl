@@ -55,4 +55,4 @@ y = F.conv2d(x, w, stride=1, padding=1)
 
 ### Visualizing the Process
 
-<img src="/assets/convolutional-layer.svg" alt="Functional Convolution Operation" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/convolutional-layer.svg" alt="Functional Convolution Operation" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />

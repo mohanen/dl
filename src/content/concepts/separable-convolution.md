@@ -49,4 +49,4 @@ nn.Sequential(
 
 ### Visualizing the Process
 
-<img src="/assets/separable-convolution.svg" alt="Separable Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/separable-convolution.svg" alt="Separable Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />

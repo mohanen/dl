@@ -58,4 +58,4 @@ nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1)
 
 ### Visualizing the Process
 
-<img src="/assets/conv2d.svg" alt="2D Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/conv2d.svg" alt="2D Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />

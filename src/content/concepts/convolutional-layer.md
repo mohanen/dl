@@ -66,4 +66,4 @@ y = layer(x)
 
 ### Visualizing the Process
 
-<img src="/assets/convolutional-layer.svg" alt="Convolutional Layer" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/convolutional-layer.svg" alt="Convolutional Layer" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />

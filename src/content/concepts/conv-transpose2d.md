@@ -46,4 +46,4 @@ nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2)
 
 ### Visualizing the Process
 
-<img src="/assets/conv-transpose2d.svg" alt="Transposed 2D Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/conv-transpose2d.svg" alt="Transposed 2D Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />

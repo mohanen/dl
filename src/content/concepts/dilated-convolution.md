@@ -43,4 +43,4 @@ nn.Conv2d(64, 64, kernel_size=3, dilation=2, padding=2)
 
 ### Visualizing the Process
 
-<img src="/assets/dilated-convolution.svg" alt="Dilated Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/dilated-convolution.svg" alt="Dilated Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />

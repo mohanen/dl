@@ -6,6 +6,8 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
+  site: 'https://mohanen.github.io/dl',
+  base: '/dl',
   integrations: [
     svelte(),
     tailwind({

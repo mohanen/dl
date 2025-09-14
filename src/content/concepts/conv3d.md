@@ -49,4 +49,4 @@ nn.Conv3d(3, 64, kernel_size=3, stride=1, padding=1)
 
 ### Visualizing the Process
 
-<img src="/assets/conv3d.svg" alt="3D Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/conv3d.svg" alt="3D Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />

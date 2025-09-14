@@ -76,4 +76,4 @@ layer = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=3, stride=1, pad
 
 ### Visualizing the Process
 
-<img src="/assets/conv1d.svg" alt="1D Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/conv1d.svg" alt="1D Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />

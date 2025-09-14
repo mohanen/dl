@@ -44,4 +44,4 @@ nn.Conv2d(64, 64, kernel_size=3, padding=1, groups=64)
 
 ### Visualizing the Process
 
-<img src="/assets/depthwise-convolution.svg" alt="Depthwise Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
+<img src="/dl/assets/depthwise-convolution.svg" alt="Depthwise Convolution" class="w-full h-auto mx-auto bg-muted/30 rounded-md p-4" />
