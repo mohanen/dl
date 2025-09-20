@@ -4,8 +4,106 @@ import CollapsibleCategory from '../components/CollapsibleCategory.svelte';
 import SearchFilter from '../components/SearchFilter.svelte';
 import { getCollection } from 'astro:content';
 
-const concepts = await getCollection('concepts');
-const categories = Array.from(new Set(concepts.map((c) => c.data.category))).sort();
+type Topic = { title: string; image?: string; desc: string[]; parameters: string[]; q?: string };
+const files = await getCollection('concepts');
+
+function extractMultiTopics(entry: any): Topic[] {
+  // Parse a single markdown file body into multiple card topics.
+  const body = entry.body || '';
+  const lines = body.split(/\r?\n/);
+  const topics: Topic[] = [];
+  let current: Topic | null = null;
+  const base = import.meta.env.BASE_URL;
+  const pushCurrent = () => {
+    if (!current) return;
+    // Normalize and ensure arrays
+    current.desc = current.desc || [];
+    current.parameters = current.parameters ? normalizeParameterBullets(current.parameters) : [];
+    // Precompute search haystack for faster filtering on the client
+    current.q = `${current.title} ${current.desc.join(' ')} ${current.parameters.join(' ')}`.toLowerCase();
+    topics.push(current);
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    // ## Heading -> Title start
+    const h2 = line.match(/^##\s+(.+)$/);
+    if (h2) {
+      pushCurrent();
+      current = { title: h2[1].trim(), desc: [], parameters: [] };
+      continue;
+    }
+    if (!current) continue;
+    // Image: first image after title becomes card image
+    const mdImg = line.match(/^!\[[^\]]*\]\(([^)]+)\)/);
+    const htmlImg = line.match(/<img[^>]*src=["']([^"']+)["'][^>]*>/);
+    if (current && !current.image && (mdImg || htmlImg)) {
+      current.image = (mdImg ? mdImg[1] : htmlImg![1]).trim();
+      continue;
+    }
+    // ### Desc or ### Parameters sections
+    const h3 = line.match(/^###\s+(Desc|Description|Parameters)\s*$/i);
+    if (h3) {
+      const section = h3[1].toLowerCase().startsWith('param') ? 'parameters' : 'desc';
+      // collect bullet lines until next heading
+      const collected = [];
+      let j = i + 1;
+      for (; j < lines.length; j++) {
+        const l = lines[j];
+        if (/^###\s+/.test(l) || /^##\s+/.test(l)) break;
+        const bullet = l.match(/^\s*[-*]\s+(.*)$/);
+        if (bullet) collected.push(bullet[1].trim());
+      }
+      current[section] = collected;
+      i = j - 1; // advance
+      continue;
+    }
+  }
+  pushCurrent();
+  return topics;
+}
+
+function normalizeParameterBullets(bullets: string[]): string[] {
+  const results: string[] = [];
+  for (const raw of bullets) {
+    const text = raw.trim();
+    if (!text) continue;
+    const idx = text.indexOf(':');
+    if (idx !== -1) {
+      const namesPart = text.slice(0, idx).trim();
+      const descPart = text.slice(idx + 1).trim();
+      const names = namesPart.split('/').map((n) => n.trim()).filter(Boolean);
+      for (const name of names) {
+        results.push(`<span class=\"param-name\">${escapeHtml(name)}</span>: ${escapeHtml(descPart)}`);
+      }
+    } else {
+      const names = text.split('/').map((n) => n.trim()).filter(Boolean);
+      if (names.length > 1) {
+        for (const name of names) results.push(`<span class=\"param-name\">${escapeHtml(name)}</span>`);
+      } else {
+        results.push(`<span class=\"param-name\">${escapeHtml(text)}</span>`);
+      }
+    }
+  }
+  return results;
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
+}
+
+// Build categories -> topics[] map
+const categoriesMap = new Map();
+for (const entry of files) {
+  const cat = entry.data.category || 'General';
+  const topics = extractMultiTopics(entry);
+  if (!categoriesMap.has(cat)) categoriesMap.set(cat, []);
+  categoriesMap.get(cat).push(...topics);
+}
+const categories = Array.from(categoriesMap.keys()).sort();
 ---
 
 <BaseLayout title="DL Cheatsheet" description="Deep Learning concepts, parameters, and examples">
@@ -26,7 +124,7 @@ const categories = Array.from(new Set(concepts.map((c) => c.data.category))).sor
       <CollapsibleCategory
         client:load
         category={cat}
-        concepts={concepts.filter((c) => c.data.category === cat)}
+        topics={categoriesMap.get(cat)}
       />
     ))}
   </section>

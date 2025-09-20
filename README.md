@@ -37,9 +37,10 @@ npm run preview
 
 ## Author content
 
-- Follow `content_structure_guide.md` for frontmatter and section structure.
-- Add concept files under `src/content/concepts/` (Markdown or MDX).
-- Example file: `src/content/concepts/convolutional-layer.md`.
+- Follow `content_structure_guide.md` for the new multi-topic structure.
+- Add files under `src/content/concepts/` (Markdown).
+- Each file can contain multiple topics using `##` for the card title, with `### Desc` and `### Parameters` bullet lists, and an optional image right under the title.
+- Example file: `src/content/concepts/convolutions.md`.
 
 ## Search, math, and code
 
