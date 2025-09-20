@@ -2,7 +2,7 @@ const { fontFamily } = require("tailwindcss/defaultTheme")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ["class"],
+  darkMode: 'class',
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
@@ -13,66 +13,47 @@ module.exports = {
         's-3': '0 18px 42px rgba(0,0,0,.28)'
       },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        // Extended semantic tokens mapped to CSS variables
-        text: {
-          DEFAULT: "hsl(var(--text))",
-          muted: "hsl(var(--text-muted))",
-          subtle: "hsl(var(--text-subtle))",
-        },
-        heading: "hsl(var(--heading))",
-        icon: {
-          DEFAULT: "hsl(var(--icon))",
-          muted: "hsl(var(--icon-muted))",
-        },
+        border: '#e5e7eb',
+        input: '#e5e7eb',
+        ring: '#6366f1',
+        background: '#ffffff',
+        foreground: '#111827',
+        heading: '#111827',
         link: {
-          DEFAULT: "hsl(var(--link))",
-          hover: "hsl(var(--link-hover))",
-        },
-        surface: {
-          DEFAULT: "hsl(var(--surface))",
-          hover: "hsl(var(--surface-hover))",
-        },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-          hover: "hsl(var(--primary-hover))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-          hover: "hsl(var(--secondary-hover))",
+          DEFAULT: '#6366f1',
+          hover: '#4f46e5',
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: '#f3f4f6',
+          foreground: '#6b7280',
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-          hover: "hsl(var(--accent-hover))",
+          DEFAULT: '#6366f1',
+          foreground: '#ffffff',
+          hover: '#4f46e5',
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: '#ffffff',
+          foreground: '#111827',
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: '#ffffff',
+          foreground: '#111827',
         },
-        success: "hsl(var(--success))",
-        warning: "hsl(var(--warning))",
-        error: "hsl(var(--error))",
-        info: "hsl(var(--info))",
+        primary: {
+          DEFAULT: '#6366f1',
+          foreground: '#ffffff',
+          hover: '#4f46e5',
+        },
+        success: '#16a34a',
+        warning: '#f59e0b',
+        error: '#dc2626',
+        info: '#3b82f6',
       },
       borderRadius: {
-        lg: `var(--radius)`,
-        md: `calc(var(--radius) - 2px)`,
-        sm: "calc(var(--radius) - 4px)",
+        lg: '0.5rem',
+        md: '0.375rem',
+        sm: '0.25rem',
       },
       fontFamily: {
         sans: ["Inter", ...fontFamily.sans],
@@ -80,10 +61,10 @@ module.exports = {
       typography: ({ theme }) => ({
         DEFAULT: {
           css: {
-            '--tw-prose-body': theme('colors.foreground / 80%'),
-            '--tw-prose-headings': theme('colors.foreground'),
-            '--tw-prose-lead': theme('colors.foreground / 90%'),
-            '--tw-prose-links': theme('colors.primary'),
+            '--tw-prose-body': theme('colors.foreground / 0.85'),
+            '--tw-prose-headings': theme('colors.heading'),
+            '--tw-prose-lead': theme('colors.foreground'),
+            '--tw-prose-links': theme('colors.link.DEFAULT'),
             '--tw-prose-bold': theme('colors.foreground'),
             '--tw-prose-counters': theme('colors.muted.foreground'),
             '--tw-prose-bullets': theme('colors.border'),

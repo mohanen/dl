@@ -22,11 +22,11 @@
   on:mouseenter={() => { if (!isTouchDevice) isHovering = true; }}
   on:mouseleave={() => { if (!isTouchDevice) isHovering = false; }}
 >
-  <div class="block rounded-xl border bg-card/90 backdrop-blur-sm transition-all duration-200 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-accent/50 focus-within:ring-1 focus-within:ring-ring">
+  <div class="block rounded-xl border border-gray-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm transition-all duration-200 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-indigo-400/50 focus-within:ring-1 focus-within:ring-indigo-500">
     {#if image}
       <div class="relative w-full aspect-video overflow-hidden">
         {#if !cardImgLoaded}
-          <div class="absolute inset-0 bg-muted animate-pulse"></div>
+          <div class="absolute inset-0 bg-gray-100 dark:bg-neutral-800 animate-pulse"></div>
         {/if}
         <img
           bind:this={cardImgEl}
@@ -43,13 +43,13 @@
     {/if}
     <div class="p-4">
       <div class="mb-4">
-        <h3 class="text-base md:text-lg font-semibold tracking-tight text-card-foreground">{title}</h3>
+        <h3 class="text-base md:text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100">{title}</h3>
       </div>
       <div class="grid gap-4">
         {#if desc?.length}
-          <section class="rounded-md bg-muted/30 p-4">
-            <div class="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Desc</div>
-            <ul class="list-disc pl-5 text-sm text-card-foreground/90 marker:text-accent space-y-2">
+          <section class="rounded-md bg-gray-100/60 dark:bg-neutral-800/60 p-4">
+            <div class="text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Desc</div>
+            <ul class="list-disc pl-5 text-sm text-gray-800 dark:text-gray-200 marker:text-indigo-500 space-y-2">
               {#each desc as d}
                 <li>{@html d}</li>
               {/each}
@@ -58,11 +58,11 @@
         {/if}
 
         {#if parameters?.length}
-          <section class="rounded-md bg-muted/30 p-4">
-            <div class="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Parameters</div>
-            <ul class="list-disc pl-5 text-sm text-card-foreground/90 marker:text-accent space-y-2">
+          <section class="rounded-md bg-gray-100/60 dark:bg-neutral-800/60 p-4">
+            <div class="text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Parameters</div>
+            <ul class="list-disc pl-5 text-sm text-gray-800 dark:text-gray-200 marker:text-indigo-500 space-y-2">
               {#each parameters as p}
-                <li class="[&_>.param-name]:font-semibold [&_>.param-name]:text-foreground">{@html p}</li>
+                <li class="[&_>.param-name]:font-semibold [&_>.param-name]:text-gray-900 dark:[&_>.param-name]:text-gray-100">{@html p}</li>
               {/each}
             </ul>
           </section>

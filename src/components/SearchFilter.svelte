@@ -22,11 +22,11 @@
 
 <div class="mb-8 flex flex-col sm:flex-row sm:items-center gap-4">
   <div class="relative w-full sm:max-w-xs">
-    <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" aria-hidden="true" />
+    <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 h-4 w-4" aria-hidden="true" />
     <input
       type="text"
       placeholder="Search concepts..."
-      class="pl-10 pr-4 py-2 w-full bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+      class="pl-10 pr-4 py-2 w-full bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
       bind:value={localTerm}
       on:input={(e) => handleDebouncedInput((e.target as HTMLInputElement).value)}
       aria-label="Search concepts"
@@ -34,7 +34,7 @@
     {#if localTerm}
       <button
         type="button"
-        class="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs"
+        class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-xs"
         on:click={() => { localTerm=''; searchTerm.set(''); }}
         aria-label="Clear search"
       >
@@ -69,6 +69,6 @@
         {/each}
       </div>
     </div>
-    <div class="flex-shrink-0 text-sm text-muted-foreground ml-2 whitespace-nowrap">{$resultCount} results</div>
+    <div class="flex-shrink-0 text-sm text-gray-600 dark:text-gray-400 ml-2 whitespace-nowrap">{$resultCount} results</div>
   </div>
 </div>

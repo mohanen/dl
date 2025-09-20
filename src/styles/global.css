@@ -2,203 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Dark theme (default) */
-  --background: 282 45% 9%;            /* #1a0c20 */
-  --foreground: 178 30% 76%;           /* body text: #b0d4d3 */
-  --card: 258 31% 19%;                 /* surface: #2a213f */
-  --card-foreground: 0 0% 92%;
-  --popover: 258 31% 19%;
-  --popover-foreground: 178 30% 76%;
-  --primary: 56 98% 57%;               /* viridis yellow (#fde725) */
-  --primary-foreground: 282 45% 9%;    /* dark text on yellow */
-  --secondary: 122 50% 58%;            /* viridis green (#5ec962) */
-  --secondary-foreground: 282 45% 9%;
-  --muted: 258 31% 24%;
-  --muted-foreground: 178 30% 68%;
-  --accent: 56 98% 57%;
-  --accent-foreground: 282 45% 9%;
-  --border: 223 41% 39%;               /* #3b528b */
-  --input: 223 41% 39%;
-  --ring: 56 98% 57%;
-  --radius: 0.5rem;
+html, body { height: 100%; }
 
-  /* Extended semantic tokens */
-  --text: var(--foreground);
-  --text-muted: 178 30% 64%;
-  --text-subtle: 178 30% 58%;
-  --heading: 63 73% 90%;               /* #f6f8d2 */
-  --link: 56 98% 57%;
-  --link-hover: 56 98% 62%;
-  --icon: 178 30% 76%;
-  --icon-muted: 178 30% 58%;
-  --surface: 258 31% 19%;
-  --surface-hover: 258 31% 22%;
-  --primary-hover: 56 98% 62%;
-  --secondary-hover: 122 50% 65%;
-  --accent-hover: 56 98% 62%;
-  --focus-ring: var(--ring);
+body { @apply bg-white text-gray-900 dark:bg-neutral-950 dark:text-gray-100 antialiased; }
 
-  /* System feedback (semantic) */
-  --success: 134 61% 41%;              /* #28a745 */
-  --warning: 45 100% 51%;              /* #ffc107 */
-  --error: 354 70% 53%;                /* #dc3545 */
-  --info: 223 41% 39%;                 /* #3b528b */
-}
+a { @apply underline underline-offset-4 text-indigo-600 hover:text-indigo-500; }
 
-.light {
-  /* Light (bright) theme */
-  --background: 0 0% 99%;              /* #fcfdfd */
-  --foreground: 213 18% 30%;           /* body text: #3e4a59 */
-  --card: 220 20% 95%;                 /* surface: #f1f3f6 */
-  --card-foreground: 213 18% 30%;
-  --popover: 220 20% 95%;
-  --popover-foreground: 213 18% 30%;
-  --primary: 177 63% 35%;              /* #21918c */
-  --primary-foreground: 0 0% 100%;
-  --secondary: 56 98% 57%;             /* #fde725 (non-text highlight only) */
-  --secondary-foreground: 282 45% 9%;  /* dark text on yellow */
-  --muted: 220 20% 96%;
-  --muted-foreground: 213 12% 40%;
-  --accent: 56 98% 57%;
-  --accent-foreground: 282 45% 9%;
-  --border: 214 24% 88%;               /* #dde2e7 */
-  --input: 214 24% 88%;
-  --ring: 177 63% 35%;
+pre, code { @apply rounded-md; }
+.prose pre { @apply bg-gray-100 dark:bg-neutral-900; }
 
-  /* Extended semantic tokens (light overrides) */
-  --text: var(--foreground);
-  --text-muted: 213 12% 45%;
-  --text-subtle: 213 12% 55%;
-  --heading: 289 98% 17%;              /* #440154 */
-  --link: 177 63% 35%;                 /* primary accent */
-  --link-hover: 177 63% 31%;
-  --icon: 213 18% 30%;
-  --icon-muted: 213 12% 45%;
-  --surface: 220 20% 97%;
-  --surface-hover: 220 20% 95%;
-  --primary-hover: 177 63% 31%;
-  --secondary-hover: 56 98% 52%;
-  --accent-hover: 56 98% 52%;
-  --focus-ring: var(--ring);
+.prose a { @apply text-indigo-600 hover:text-indigo-500 underline underline-offset-4; }
 
-  /* System feedback (semantic) */
-  --success: 134 61% 41%;
-  --warning: 45 100% 51%;
-  --error: 354 70% 53%;
-  --info: 223 41% 39%;
-}
+.container { @apply max-w-5xl mx-auto px-4; }
 
-html,
-body {
-  height: 100%;
-}
+.callout { @apply my-4 rounded-md border p-3; }
+.callout .callout-title { @apply mb-1 font-semibold flex items-center gap-2; }
+.callout .callout-body { @apply text-sm text-gray-600 dark:text-gray-400; }
+.callout-info { @apply border-blue-400/30 bg-blue-400/10; }
+.callout-warn { @apply border-amber-400/30 bg-amber-400/10; }
+.callout-success { @apply border-green-500/30 bg-green-500/10; }
+.callout-error { @apply border-red-500/30 bg-red-500/10; }
 
-body {
-  @apply bg-background antialiased;
-  color: hsl(var(--text));
-}
-
-a {
-  color: hsl(var(--link));
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-color: hsl(var(--link) / 0.6);
-}
-a:hover {
-  color: hsl(var(--link-hover));
-  text-decoration-color: hsl(var(--link-hover));
-}
-
-pre,
-code {
-  @apply rounded-md;
-}
-
-.prose pre {
-  @apply bg-muted;
-}
-
-/* Typography enhancements */
-.prose {
-  color: hsl(var(--text));
-}
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6, .prose strong {
-  color: hsl(var(--heading));
-}
-.prose a {
-  color: hsl(var(--link));
-  text-decoration-color: hsl(var(--link) / 0.6);
-}
-.prose a:hover {
-  color: hsl(var(--link-hover));
-  text-decoration-color: hsl(var(--link-hover));
-}
-.prose code { color: hsl(var(--foreground)); }
-
-/* Muted and subtle text helpers */
-.text-muted { color: hsl(var(--text-muted)); }
-.text-subtle { color: hsl(var(--text-subtle)); }
-
-/* Icon coloring helpers (SVGs should use currentColor) */
-.icon { color: hsl(var(--icon)); }
-.icon-muted { color: hsl(var(--icon-muted)); }
-
-/* Surface helpers */
-.surface { background: hsl(var(--surface)); color: hsl(var(--text)); }
-.surface:hover { background: hsl(var(--surface-hover)); }
-
-/* Focus visibility */
-a:focus-visible,
-button:focus-visible,
-[role="button"]:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid hsl(var(--focus-ring));
-  outline-offset: 2px;
-}
-
-.container {
-  @apply max-w-5xl mx-auto px-4;
-}
-
-/* Callouts */
-.callout {
-  @apply my-4 rounded-md border p-3;
-}
-.callout .callout-title {
-  @apply mb-1 font-semibold flex items-center gap-2;
-}
-.callout .callout-body {
-  @apply text-sm text-muted-foreground;
-}
-.callout-info {
-  border-color: hsl(var(--info) / 0.3);
-  background: hsl(var(--info) / 0.06);
-}
-.callout-warn {
-  border-color: hsl(var(--warning) / 0.3);
-  background: hsl(var(--warning) / 0.06);
-}
-.callout-success {
-  border-color: hsl(var(--success) / 0.3);
-  background: hsl(var(--success) / 0.06);
-}
-.callout-error {
-  border-color: hsl(var(--error) / 0.3);
-  background: hsl(var(--error) / 0.06);
-}
-
-/* Top reading progress bar */
-.progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  background: hsl(var(--primary));
-  width: 0;
-  z-index: 60;
-}
+.progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: #6366f1; width: 0; z-index: 60; }
 
 

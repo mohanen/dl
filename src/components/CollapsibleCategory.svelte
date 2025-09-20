@@ -31,10 +31,10 @@
     <div>
       <button
         on:click={toggle}
-        class="w-full text-left flex items-center justify-between mt-8 mb-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md p-1"
+        class="w-full text-left flex items-center justify-between mt-8 mb-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-md p-1"
         aria-expanded={isOpen}
       >
-        <h2 class="text-xl font-semibold text-heading">{category}</h2>
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{category}</h2>
         <ChevronDown class={`transition-transform duration-200 ${!isOpen ? 'rotate-180' : ''}`} />
       </button>
 

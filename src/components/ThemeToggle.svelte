@@ -5,8 +5,6 @@
   let theme: 'light' | 'dark' | null = null;
 
   onMount(() => {
-    // The theme is already set by the inline script in the <head>.
-    // We just need to sync the component's state to what's in the DOM.
     theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
   });
 
@@ -14,9 +12,7 @@
     theme = newTheme;
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
     } else {
-      document.documentElement.classList.add('light');
       document.documentElement.classList.remove('dark');
     }
     localStorage.setItem('theme', theme);
