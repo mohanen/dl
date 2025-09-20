@@ -20,13 +20,15 @@
   }
 </script>
 
-<div class="mb-8 flex flex-col sm:flex-row sm:items-center gap-4">
-  <div class="relative w-full sm:max-w-xs">
-    <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 h-4 w-4" aria-hidden="true" />
+<div class="mb-10 flex flex-col sm:flex-row sm:items-center gap-4">
+  <div class="relative w-full sm:max-w-sm">
+    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+      <SearchIcon class="text-gray-400 dark:text-gray-500 h-5 w-5 transition-colors duration-200" aria-hidden="true" />
+    </div>
     <input
       type="text"
       placeholder="Search concepts..."
-      class="pl-10 pr-4 py-2 w-full bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      class="pl-12 pr-12 py-3 w-full bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm border border-gray-200/60 dark:border-neutral-700/60 rounded-xl shadow-sm hover:shadow-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-400/60 transition-all duration-200 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
       bind:value={localTerm}
       on:input={(e) => handleDebouncedInput((e.target as HTMLInputElement).value)}
       aria-label="Search concepts"
@@ -34,11 +36,13 @@
     {#if localTerm}
       <button
         type="button"
-        class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-xs"
+        class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
         on:click={() => { localTerm=''; searchTerm.set(''); }}
         aria-label="Clear search"
       >
-        ✕
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
       </button>
     {/if}
   </div>
@@ -47,28 +51,54 @@
       <div class="flex items-center gap-2">
         <button
           on:click={() => setCategory('All')}
-          class="px-3 py-1 rounded-md text-sm transition-colors whitespace-nowrap"
-          class:bg-primary={ $activeCategory === 'All' }
-          class:text-primary-foreground={ $activeCategory === 'All' }
-          class:hover:bg-accent={ $activeCategory !== 'All' }
-          class:hover:text-accent-foreground={ $activeCategory !== 'All' }
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap backdrop-blur-sm border"
+          class:bg-teal-600={$activeCategory === 'All'}
+          class:text-white={$activeCategory === 'All'}
+          class:border-transparent={$activeCategory === 'All'}
+          class:bg-white={$activeCategory !== 'All'}
+          class:text-gray-700={$activeCategory !== 'All'}
+          class:border-gray-200={$activeCategory !== 'All'}
+          class:dark:bg-neutral-800={$activeCategory !== 'All'}
+          class:dark:text-gray-300={$activeCategory !== 'All'}
+          class:dark:border-neutral-700={$activeCategory !== 'All'}
+          class:hover:bg-teal-500={$activeCategory === 'All'}
+          class:hover:text-white={$activeCategory === 'All'}
+          class:hover:bg-gray-100={$activeCategory !== 'All'}
+          class:hover:border-gray-300={$activeCategory !== 'All'}
+          class:dark:hover:bg-neutral-700={$activeCategory !== 'All'}
+          class:dark:hover:border-neutral-600={$activeCategory !== 'All'}
+          class:shadow-sm={$activeCategory === 'All'}
         >
           All
         </button>
         {#each categories as category}
           <button
             on:click={() => setCategory(category)}
-            class="px-3 py-1 rounded-md text-sm transition-colors whitespace-nowrap"
-            class:bg-primary={ $activeCategory === category }
-            class:text-primary-foreground={ $activeCategory === category }
-            class:hover:bg-accent={ $activeCategory !== category }
-            class:hover:text-accent-foreground={ $activeCategory !== category }
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap backdrop-blur-sm border"
+            class:bg-teal-600={$activeCategory === category}
+            class:text-white={$activeCategory === category}
+            class:border-transparent={$activeCategory === category}
+            class:bg-white={$activeCategory !== category}
+            class:text-gray-700={$activeCategory !== category}
+            class:border-gray-200={$activeCategory !== category}
+            class:dark:bg-neutral-800={$activeCategory !== category}
+            class:dark:text-gray-300={$activeCategory !== category}
+            class:dark:border-neutral-700={$activeCategory !== category}
+            class:hover:bg-teal-500={$activeCategory === category}
+            class:hover:text-white={$activeCategory === category}
+            class:hover:bg-gray-100={$activeCategory !== category}
+            class:hover:border-gray-300={$activeCategory !== category}
+            class:dark:hover:bg-neutral-700={$activeCategory !== category}
+            class:dark:hover:border-neutral-600={$activeCategory !== category}
+            class:shadow-sm={$activeCategory === category}
           >
             {category}
           </button>
         {/each}
       </div>
     </div>
-    <div class="flex-shrink-0 text-sm text-gray-600 dark:text-gray-400 ml-2 whitespace-nowrap">{$resultCount} results</div>
+    <div class="flex-shrink-0 text-sm text-gray-500 dark:text-gray-400 ml-4 px-3 py-1 bg-gray-100/60 dark:bg-neutral-800/60 rounded-full backdrop-blur-sm whitespace-nowrap font-medium">
+      {$resultCount} result{$resultCount !== 1 ? 's' : ''}
+    </div>
   </div>
 </div>
